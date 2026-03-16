@@ -5,10 +5,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.example.erms.dto.EmployeeDTO;
 import com.example.erms.entity.Employee;
 import com.example.erms.exception.ResourceNotFoundException;
+import com.example.erms.payload.ApiResponse;
 import com.example.erms.repository.EmployeeRepository;
 
 @Service
@@ -32,11 +35,34 @@ public class EmployeeService {
     // =========================
     // READ ALL
     // =========================
-    public List<EmployeeDTO> getAllEmployees() {
-        return employeeRepository.findAll()
+    // public List<EmployeeDTO> getAllEmployees() {
+    // return employeeRepository.findAll()
+    // .stream()
+    // .map(this::mapToDTO)
+    // .collect(Collectors.toList());
+    // }
+
+    public Page<EmployeeDTO> getEmployees(Pageable pageable) {
+        Page<Employee> employeePage = employeeRepository.findAll(pageable);
+
+        return employeePage.map(this::mapToDTO);
+    }
+
+    // Employee get by salary range
+    public List<EmployeeDTO> getEmployeesBySalaryRange(double minSalary, double maxSalary) {
+        return employeeRepository.findEmployeeBySalaryRange(minSalary, maxSalary)
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
+    }
+
+    // Search employee by name.
+    public List<EmployeeDTO> searchEmployeeByName(String name) {
+        List<Employee> employees = employeeRepository.searchEmployeeByName(name);
+        if (employees.isEmpty()) {
+            throw new ResourceNotFoundException("Employee not found with name: " + name);
+        }
+        return employees.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     // =========================

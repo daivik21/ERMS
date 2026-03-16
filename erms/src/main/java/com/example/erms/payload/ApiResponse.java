@@ -1,5 +1,7 @@
 package com.example.erms.payload;
 
+import com.example.erms.dto.EmployeeDTO;
+
 public class ApiResponse<T> {
 
     private boolean success;
@@ -10,6 +12,14 @@ public class ApiResponse<T> {
         this.success = success;
         this.message = message;
         this.data = data;
+    }
+
+    public static <T> ApiResponse<T> success(String message, T data) {
+        return new ApiResponse<>(true, message, data);
+    }
+
+    public static <T> ApiResponse<T> failure(String message) {
+        return new ApiResponse<>(false, message, null);
     }
 
     // Getters and setters
