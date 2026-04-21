@@ -4,7 +4,11 @@ import Header from '../../components/Header/Header.tsx';
 import Sidebar from '../../components/Sidebar/Sidebar.tsx';
 import EmployeeTable from '../../components/EmployeeTable/EmployeeTable.tsx';
 
-const LandingPage: React.FC = () => {
+interface LandingPageProps {
+  onLogout: () => void;
+}
+
+const LandingPage: React.FC<LandingPageProps> = ({ onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('Employees');
 
@@ -23,12 +27,10 @@ const LandingPage: React.FC = () => {
 
   const handleEdit = (employee: any) => {
     console.log('Edit employee:', employee);
-    alert(`Edit functionality for ${employee.name}`);
   };
 
   const handleDelete = (id: number) => {
     console.log('Delete employee:', id);
-    alert(`Delete functionality for employee ${id}`);
   };
 
   const handleView = (employee: any) => {
@@ -39,7 +41,7 @@ const LandingPage: React.FC = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       {/* Header */}
-      <Header onMenuToggle={handleMenuToggle} userEmail="admin@erms.com" />
+      <Header onMenuToggle={handleMenuToggle} userEmail="admin@erms.com" onLogout={onLogout} />
 
       {/* Sidebar */}
       <Sidebar open={sidebarOpen} onClose={handleSidebarClose} onItemClick={handleMenuItemClick} />

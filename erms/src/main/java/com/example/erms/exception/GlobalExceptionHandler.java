@@ -33,11 +33,22 @@ public class GlobalExceptionHandler {
                                 HttpStatus.BAD_REQUEST);
         }
 
+        @ExceptionHandler(DuplicateResourceException.class)
+        public ResponseEntity<ApiResponse<String>> handleDuplicate(
+                        DuplicateResourceException ex) {
+
+                ApiResponse<String> response = new ApiResponse<>(false, ex.getMessage(), null);
+
+                return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }
+
         // 🔴 Any other error
         @ExceptionHandler(Exception.class)
         public ResponseEntity<String> handleGeneral(Exception ex) {
 
-                return new ResponseEntity<>("Something went wrong",
+                ex.printStackTrace(); // 🔥 This will show error in console
+
+                return new ResponseEntity<>(ex.getMessage(),
                                 HttpStatus.INTERNAL_SERVER_ERROR);
         }
 }
